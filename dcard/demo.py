@@ -22,7 +22,7 @@ def parse_args():
     parser.add_argument('-i', help='the headers of requests', type=dict, default={})
     parser.add_argument('-p', help='the parameters of requests', type=dict, default={'popular' : 'false', 'limit' : 100})
     parser.add_argument('-w', help='query key word', type=str, default=None)
-    parser.add_argument('-l', help='path to save your logger txt file', type=str, default='logger.txt')
+    parser.add_argument('-l', help='path to save your logger txt file', type=str, default='./res/logger.txt')
     parser.add_argument('-c', help='parse individual content or not', type=bool, default=False)
     parser.add_argument('-t', help='parsing titles', type=list, default=['title', 'forumName','school', 'gender', 'commentCount', 'likeCount', 'totalCommentCount', 'topics', 'content'])
     parser.add_argument('-cp', help='path to save your csv file', default='./res/dcard.csv')
