@@ -7,6 +7,13 @@
 PTT 的網頁沒有什麼反爬機制，所以可以輕鬆的用 requests 模組就爬取到文章
 PTT 不支援 API，所以需要用 bs4 去解析 html 
 
+### Usage
+
+```python
+git clone https://github.com/DongDong-Zoez/webParser.git
+python demo.py
+```
+
 ### argument
 
 - ```k```: 字串，輸入你要搜尋的關鍵字
@@ -24,6 +31,17 @@ PTT 不支援 API，所以需要用 bs4 去解析 html
 
 Dcard 使用的是高級的 Cloudflare，我們使用一般的 cloudscraper 沒辦法繞過 dcard 的 Captcha，
 所以有時候會有錯誤產生 --> 盡量不要向 dcard 網站發太過頻繁的請求
+
+如果設置 ```-c False``` 則會平均每 4 秒抓 100 篇文章 (僅包含內文簡介)
+
+如果設置 ```-c True``` 則會平均每 4 秒抓 1 篇文章 (包含內文)
+
+### Usage
+
+```python
+git clone https://github.com/DongDong-Zoez/webParser.git
+python demo.py -c False
+```
 
 ### argument
 
