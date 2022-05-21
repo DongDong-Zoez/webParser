@@ -19,13 +19,13 @@ def parse_args():
                                                                      
     parser.add_argument('-k', help='your searching keyword', default=None)
     parser.add_argument('-f', help='The forum of ptt', type=str, default='Stock')
-    parser.add_argument('-p', help='path to save your txt logger file', type=str, default='logger.txt')
+    parser.add_argument('-p', help='path to save your txt logger file', type=str, default='./res/logger.txt')
     parser.add_argument('-n', help='number of page to parse', type=int, default=2)
     parser.add_argument('-a', help='search article from specify author', default=None)
     parser.add_argument('-l', help='the headers of requests module', type=dict, default={})
     parser.add_argument('-c', help='write output to csv', type=bool, default=False)
     parser.add_argument('-x', help='write output to xlsx', type=bool, default=True)
-    parser.add_argument('-cp', help='path to save your csv file', default='-/res/ptt.csv')
+    parser.add_argument('-cp', help='path to save your csv file', default='./res/ptt.csv')
     parser.add_argument('-xp', help='path to save your xlsx file', default='./res/ptt.xlsx')
     
     args = parser.parse_args()                                        
