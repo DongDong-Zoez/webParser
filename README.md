@@ -23,7 +23,7 @@ PTT 不支援 API，所以需要用 bs4 去解析 html
 ## Dcard
 
 Dcard 使用的是高級的 Cloudflare，我們使用一般的 cloudscraper 沒辦法繞過 dcard 的 Captcha，
-所以有時候會有錯誤產生 盡量不要向 dcard 網站發太過頻繁的請求
+所以有時候會有錯誤產生 --> 盡量不要向 dcard 網站發太過頻繁的請求
 
 ### argument
 
