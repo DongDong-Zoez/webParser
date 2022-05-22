@@ -5,6 +5,7 @@
 ## PTT
 
 PTT 的網頁沒有什麼反爬機制，所以可以輕鬆的用 requests 模組就爬取到文章
+
 PTT 不支援 API，所以需要用 bs4 去解析 html 
 
 ### Usage
