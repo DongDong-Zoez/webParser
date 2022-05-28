@@ -28,6 +28,10 @@ python demo.py
 - ```cp```: 字串，輸出 csv file 的位置
 - ```xp```: 字串，輸出 xlsx file 的位置
 
+### Customize text cleaner
+
+modify [content_cleaner](https://github.com/DongDong-Zoez/webParser/blob/e2d17b04f60c1f779b7eb667ddfcb9dbbbbfd93d/ptt/ptt.py#L142) to your customize function
+
 ## Dcard
 
 Dcard 使用的是高級的 Cloudflare，我們使用一般的 cloudscraper 沒辦法繞過 dcard 的 Captcha，
@@ -56,3 +60,7 @@ python demo.py -c False
 - ```t```: 列表，輸入你要爬取的 columns
 - ```cp```: 字串，輸出 csv file 的位置
 - ```xp```: 字串，輸出 xlsx file 的位置
+
+### Customize text cleaner
+
+modify [content_cleaner](https://github.com/DongDong-Zoez/webParser/blob/e2d17b04f60c1f779b7eb667ddfcb9dbbbbfd93d/dcard/dcard.py#L177) to your customize function
