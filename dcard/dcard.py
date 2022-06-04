@@ -35,6 +35,7 @@ class Dcard:
         self.txt_path = txt_path
         self.titles = titles
         self.parse_content = parse_content
+        self.early_stop_rounds = 0
         SmoothValue.setting(file_path=self.txt_path)
 
         if self.kw is not None:
@@ -55,8 +56,16 @@ class Dcard:
             self.titles = list(filter(lambda x: x not in ['content', 'excerpt'], self.titles))
             self.titles = self.titles + ['excerpt']
             while self.count < self.num_article:
-                root = self._fetch_forum()
-                self._fetch_excerpt(root)
+                if self.early_stop_rounds >= 10:
+                    print('Early Stopping!!')
+                    break
+                try:
+                    root = self._fetch_forum()
+                    self._fetch_excerpt(root)
+                except:
+                    self.early_stop_rounds = self.early_stop_rounds + 1
+                    SmoothValue.addCallback('fail', self.count)
+                    time.sleep(random.randint(2, 6))
   
         SmoothValue.durationTime()
         SmoothValue.info(
@@ -72,9 +81,12 @@ class Dcard:
 
         url = f"https://www.dcard.tw/service/api/v2/forums/{self.forum}/posts"
         scraper = cloudscraper.create_scraper()
-        r = scraper.get(url, headers=self.headers, params=self.params)
-        root = json.loads(r.text)
-        time.sleep(random.randint(2,6))
+        try:
+            r = scraper.get(url, headers=self.headers, params=self.params)
+            root = json.loads(r.text)
+            time.sleep(random.randint(2,6))
+        except:
+            return None
 
         return root
 
@@ -82,9 +94,12 @@ class Dcard:
 
         url = f'https://www.dcard.tw/service/api/v2/search/posts?query={self.kw}'
         scraper = cloudscraper.create_scraper()
-        r = scraper.get(url, headers=self.headers, params=self.params)
-        root = json.loads(r.text)
-        time.sleep(random.randint(2,6))
+        try:
+            r = scraper.get(url, headers=self.headers, params=self.params)
+            root = json.loads(r.text)
+            time.sleep(random.randint(2,6))
+        except:
+            return None
 
         return root
 
