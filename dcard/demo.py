@@ -1,52 +1,84 @@
-import argparse
-from dcard import Dcard
+import time
+import numpy as np
+import os 
 
-def parse_args():
-    """
-    -f: forum
-    -n: article
-    -i: headers
-    -p: params
-    -w: keyword
-    -l: logger 
-    -c: content
-    -t: titles
-    -cp: path to  csv
-    -xp: path to xlsx
-    """
-    description = 'It is a simple realization of Dcard parser'
-    parser = argparse.ArgumentParser(description=description) 
-                                                                     
-    parser.add_argument('-f', help='forum', type=str, default='stock')
-    parser.add_argument('-n', help='number of article', type=int, default=10)
-    parser.add_argument('-i', help='the headers of requests', type=dict, default={})
-    parser.add_argument('-p', help='the parameters of requests', type=dict, default={'popular' : 'false', 'limit' : 100})
-    parser.add_argument('-w', help='query key word', type=str, default=None)
-    parser.add_argument('-l', help='path to save your logger txt file', type=str, default='./res/logger.txt')
-    parser.add_argument('-c', help='parse individual content or not', type=bool, default=False)
-    parser.add_argument('-t', help='parsing titles', type=list, default=['title', 'forumName','school', 'gender', 'commentCount', 'likeCount', 'totalCommentCount', 'topics', 'content'])
-    parser.add_argument('-cp', help='path to save your csv file', default='./res/dcard.csv')
-    parser.add_argument('-xp', help='path to save your xlsx file', default='./res/dcard.xlsx')
+class SmoothValue:
 
-    args = parser.parse_args()                                        
-    return args
+    @classmethod
+    def setting(cls, file_path='logger.txt'):
+        cls.success = 0
+        cls.fail = 0
+        cls.file_path = file_path
+        cls.string = ''
+        with open(cls.file_path, 'w+') as file:
+            cls.start_time = time.time()
+            text = f'Start at {SmoothValue.timeRecorder()}'
+            floor, ceil = cls.getSpace(text=text)
+            info = '#' * 60 + '\n' + '#' + ' ' * floor +  text + ' ' * ceil + '#' + '\n' + '#' * 60
+            SmoothValue.log(info)
+            file.close()
 
-if __name__ == '__main__':
-    args = parse_args()
+    @staticmethod
+    def timeRecorder():
+        return time.strftime("%m/%d/%Y %H:%M:%S",time.localtime())
 
-    dcard = Dcard(
-        forum=args.f,
-        num_article=args.n,
-        headers=args.i,
-        params=args.p,
-        txt_path=args.l,
-        kw=args.w,
-        titles=args.t,
-        parse_content=args.c,
-        )
+    @classmethod
+    def addCallback(cls, trial, page, num_articles=1):
+        if trial == 'success':
+            info = f'Successfully fetch!! | article {page} | time: {SmoothValue.timeRecorder()}'
+            cls.success += num_articles
+        else:
+            info = f'your permission deny | article {page} | time: {SmoothValue.timeRecorder()}'
+            cls.fail += num_articles
+        print(info)
+        SmoothValue.log(info)
 
-    dcard.fetch()
-    if args.cp:
-        dcard.to_csv(args.cp)
-    if args.xp: 
-        dcard.to_xlsx(args.xp)
+    @staticmethod
+    def getSpace(text, lwd=58):
+        floor = int(np.floor((lwd -  len(text)) / 2))
+        ceil = int(np.ceil((lwd -  len(text)) / 2))
+        return floor, ceil
+
+    @classmethod
+    def durationTime(cls):
+        cls.end_time = time.time()
+        cls.duration = cls.end_time - cls.start_time
+        hours, minutes, seconds = cls.convert_timedelta(cls.duration)
+        text = f'End at {SmoothValue.timeRecorder()} | during time: {hours}h {minutes}min {seconds}s'
+        floor, ceil = cls.getSpace(text=text)
+        info = '#' * 60 + '\n' + '#' + ' ' * floor + text + ' ' * ceil + '#'
+        SmoothValue.log(info)
+
+    @classmethod
+    def log(cls, line):
+
+        file = open(cls.file_path, 'a')
+        file.write(line)
+        file.write('\n')
+
+    @staticmethod
+    def convert_timedelta(duration):
+        seconds = duration
+        hours = seconds // 3600
+        minutes = (seconds % 3600) // 60
+        seconds = (seconds % 60)
+        return str(int(hours)), str(int(minutes)), str(np.round(seconds, 2))
+
+    @classmethod
+    def info(cls, *args, **kwargs):
+        for key, value in kwargs.items():
+            cls.string = cls.string + f'{key}: {value}\n'
+        for arg in args:
+            cls.string = cls.string + arg + '\n'
+
+    @classmethod
+    def writeInfo(cls, *args, **kwargs):
+        cls.string = '#' * 60 + '\n' + cls.string
+        cls.string = cls.string + f'{cls.success} articles are fetched sucessfully\n'
+        cls.string = cls.string + f'{cls.fail} articles are failed due to your requests are too often.'
+
+        SmoothValue.log(cls.string)
+
+    @classmethod
+    def error(cls):
+        raise Exception('You should fetch first, try Dcard().fetch')
